@@ -8,7 +8,7 @@ Vue.use(Vuex)
 const state = JSON.parse(sessionStorage.getItem('state'))
 // 把会话存储数据保存到变量中
 let initState = {
-  userInfo: {}
+  userInfo: {},
 }
 // 如果会话存储有数据就更新，没有就不更新
 if (state) initState = state
@@ -26,6 +26,6 @@ export default new Vuex.Store({
     // 把state的数据保存到会话存储
     saveUserInfo(state) {
       sessionStorage.setItem('state', JSON.stringify(state))
-    }
-  }
+    },
+  },
 })

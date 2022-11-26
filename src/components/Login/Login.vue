@@ -6,11 +6,18 @@
       <el-form :model="loginForm" :rules="rules" ref="loginFormRef">
         <!-- 用户名区域 -->
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" prefix-icon="el-icon-user"></el-input>
+          <el-input
+            v-model="loginForm.username"
+            prefix-icon="el-icon-user"
+          ></el-input>
         </el-form-item>
         <!-- 密码区域 -->
         <el-form-item prop="password">
-          <el-input type="password" v-model="loginForm.password" prefix-icon="el-icon-lock"></el-input>
+          <el-input
+            type="password"
+            v-model="loginForm.password"
+            prefix-icon="el-icon-lock"
+          ></el-input>
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item>
@@ -31,19 +38,19 @@ export default {
       // 表单的数据绑定
       loginForm: {
         username: 'admin',
-        password: '123456'
+        password: '123456',
       },
       // 表单验证规则
       rules: {
         username: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
-          { min: 1, max: 8, message: '长度为 1 到 8 位字符' }
+          { min: 1, max: 8, message: '长度为 1 到 8 位字符' },
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },
-          { min: 1, max: 8, message: '长度为 1 到 8 位字符' }
-        ]
-      }
+          { min: 1, max: 8, message: '长度为 1 到 8 位字符' },
+        ],
+      },
     }
   },
   methods: {
@@ -51,9 +58,12 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     async login() {
-      this.$refs.loginFormRef.validate(async valid => {
+      this.$refs.loginFormRef.validate(async(valid) => {
         if (!valid) return false
-        const { data: res } = await LoginAPI(this.loginForm.username, this.loginForm.password)
+        const { data: res } = await LoginAPI(
+          this.loginForm.username,
+          this.loginForm.password,
+        )
         if (res.meta.status === 200) {
           // 将用户信息保存到会话存储中
           this.$store.commit('updataUserInfo', res.data)
@@ -62,8 +72,8 @@ export default {
           this.$router.replace('/home')
         } else this.$message.error('登录失败')
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
