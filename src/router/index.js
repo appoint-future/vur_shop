@@ -5,6 +5,8 @@ import Login from '@/components/Login/Login.vue'
 import Home from '@/components/Home/Home.vue'
 import Welcome from '@/components/Welcome/Welcome.vue'
 import Users from '@/components/Users/Users.vue'
+import Rights from '@/components/Power/Rights.vue'
+import Roles from '@/components/Power/Roles.vue'
 
 import store from '@/store'
 
@@ -20,6 +22,8 @@ const routes = [
     children: [
       { path: '/welcome', component: Welcome },
       { path: '/users', component: Users },
+      { path: '/rights', component: Rights },
+      { path: '/roles', component: Roles },
     ],
   },
 ]
@@ -30,7 +34,7 @@ const router = new VueRouter({
 
 // 前置导航守卫
 router.beforeEach((to, from, next) => {
-  const permissionsPath = ['/home']
+  const permissionsPath = ['/home', '/welcome', '/users']
   // 判断要跳转的页面有没有权限
   const token = store.state.userInfo.token
   if (permissionsPath.indexOf(to.path) !== -1) {

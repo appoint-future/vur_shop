@@ -106,11 +106,20 @@
               size="mini"
               @click="removeUserById(scope.row.id)"
             ></el-button>
-            <el-button
-              type="warning"
-              icon="el-icon-setting"
-              size="mini"
-            ></el-button>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="分配角色"
+              placement="top"
+              :enterable="false"
+            >
+              <el-button
+                type="warning"
+                icon="el-icon-setting"
+                size="mini"
+                @click="setRole(scope.row)"
+              ></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -170,6 +179,34 @@
           <el-button type="primary" @click="modifyUserInfo">提 交</el-button>
         </div>
       </el-dialog>
+
+      <!-- 分配角色的对话框 -->
+      <el-dialog title="分配角色" :visible.sync="setRoleVisible" width="40%">
+        <span>
+          <el-form>
+            <el-form-item label="当前的用户" label-width="90px">
+              <el-input v-model="username" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="当前的角色" label-width="90px">
+              <el-input v-model="role" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="分配新角色" label-width="90px">
+              <el-select v-model="selectRoleId" placeholder="请选择">
+                <el-option
+                  v-for="item in rolesList"
+                  :key="item.id"
+                  :label="item.roleName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="setRoleVisible = false">取 消</el-button>
+          <el-button type="primary" @click="assignmentRole">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -182,7 +219,9 @@ import {
   queryUserInfoAPI,
   modifyUserInfoAPI,
   removeUserAPI,
+  assignmentRoleAPI,
 } from '@/api/userAPI'
+import { getRolesListAPI } from '@/api/powerAPI'
 export default {
   name: 'my-Users',
   data() {
@@ -238,6 +277,18 @@ export default {
       modifyUserInfoVisible: false,
       // 修改的用户信息
       modifyUserInfoForm: {},
+      // 分配角色的对话框的显示与隐藏
+      setRoleVisible: false,
+      // 保存用户的姓名
+      username: '',
+      // 保存用户的角色
+      role: '',
+      // 保存用户的id
+      id: '',
+      // 选择器被选中的那个选项的value
+      selectRoleId: '',
+      // 全部角色
+      rolesList: [],
     }
   },
   methods: {
@@ -334,6 +385,9 @@ export default {
           const { data: res } = await removeUserAPI(id)
           if (res.meta.status === 200) {
             // 重新获取用户列表
+            if (this.userList.length === 1) {
+              this.queryInfo.pageNum--
+            }
             this.getUserList()
             this.$message({
               type: 'success',
@@ -348,6 +402,34 @@ export default {
           })
         })
     },
+    // 显示分配角色的对话框
+    setRole(scope) {
+      this.setRoleVisible = true
+      this.username = scope.username
+      this.role = scope.role_name
+      this.id = scope.id
+      // 打开前清空selectRoleId
+      this.selectRoleId = ''
+      // 获取全部角色
+      this.getRolesList()
+    },
+    // 获取全部角色
+    async getRolesList() {
+      const { data: res } = await getRolesListAPI()
+      if (res.meta.status === 200) {
+        this.rolesList = res.data
+      } else return this.$message.error(res.meta.msg)
+    },
+    // 点击确定按钮，分配角色
+    async assignmentRole() {
+      const { data: res } = await assignmentRoleAPI(this.id, this.selectRoleId)
+      if (res.meta.status === 200) {
+        this.$message.success('分配角色成功')
+        // 重新获取用户信息
+        this.getUserList()
+      } else return this.$message.error(res.meta.msg)
+      this.setRoleVisible = false
+    },
   },
   created() {
     this.getUserList()
@@ -359,35 +441,15 @@ export default {
 .users-container {
   margin-right: 3rem;
 }
-.table-box {
+.list {
   width: 100%;
-  padding: 1.5rem;
-  background-color: #fff;
-  margin-top: 1rem;
-  border-radius: 4px;
-  box-shadow: 0 0 5px #ccc;
-  .list {
-    width: 100%;
-    margin: 1rem 0 1rem 0;
-  }
-  .search-add {
-    display: flex;
-    width: 43%;
-    .el-input {
-      margin-right: 1rem;
-    }
-  }
+  margin: 1rem 0 1rem 0;
 }
-/deep/.el-table {
-  width: 100%;
-  .el-table__header-wrapper table,
-  .el-table__body-wrapper table {
-    width: 100% !important;
-  }
-  .el-table__body,
-  .el-table__footer,
-  .el-table__header {
-    table-layout: auto;
+.search-add {
+  display: flex;
+  width: 43%;
+  .el-input {
+    margin-right: 1rem;
   }
 }
 </style>

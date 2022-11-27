@@ -34,3 +34,7 @@ export const modifyUserInfoAPI = (Obj) => {
 export const removeUserAPI = (id) => {
   return axios.delete(`users/${id}`)
 }
+
+export const assignmentRoleAPI = (id, rid) => {
+  return axios.put(`users/${id}/role`, { rid })
+}

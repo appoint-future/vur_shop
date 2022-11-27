@@ -8,10 +8,14 @@
       <h1>电商后台管理系统</h1>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
-    <!-- 主题区域 -->
+    <!-- 主体区域 -->
     <el-container>
       <!-- 侧边栏区域 -->
-      <el-aside class="sidebar" :width="'12.6667rem'">
+      <el-aside
+        class="sidebar"
+        :width="'12.6667rem'"
+        style="overflow-x: hidden"
+      >
         <!-- 折叠图形区域 -->
         <div class="toggle-menu" @click="toggleMenu">|||</div>
         <!-- 菜单栏区域 -->
@@ -31,6 +35,7 @@
             v-for="item in menus"
             :key="item.id"
             :index="item.id.toString()"
+            :popper-append-to-body="false"
           >
             <template slot="title">
               <i :class="iconObj[item.id]"></i>
@@ -178,5 +183,7 @@ export default {
 }
 .el-main {
   background-color: #eaedf1;
+  height: calc(100vh - 61px); //61px为顶部header盒子高度
+  overflow-y: auto;
 }
 </style>

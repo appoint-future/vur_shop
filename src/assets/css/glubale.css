@@ -3,4 +3,30 @@ html,body,#app{
   height: 100%;
   margin: 0;
   padding: 0;
+  min-width: 1366px;
+}
+
+/* 表格的全局样式 */
+.table-box {
+  width: 100%;
+  padding: 1.5rem;
+  background-color: #fff;
+  margin-top: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 0 5px #ccc;
+}
+.el-table {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* 控制表格随浏览器宽度的变化而变化  需要配合width使用 */
+.el-table__header-wrapper table,
+.el-table__body-wrapper table {
+    width: 100% !important;
+}
+.el-table__body,
+.el-table__footer,
+.el-table__header {
+    table-layout: auto;
 }
